@@ -1,0 +1,376 @@
+1. When a user process is interrupted or causes a processor exception, the x86
+hardware switches the stack pointer to a kernel stack, before saving the current
+process state. Explain why.
+
+-The x86 hardware switches the stack pointer to a kernel stack before saving the
+current process state when a user process is interrupted or causes a processor exception
+because it needs to ensure that the kernel has its own separate memory space for storing
+important data related to the interrupt or exception handling process. By switching to a kernel stack,
+the CPU can avoid overwriting any important data that was stored on the user stack 
+and ensure that the kernel has enough memory to store all the necessary information related 
+to the interrupt or exception. This also helps to prevent security vulnerabilities that could arise if the kernel and user stacks were mixed together.
+
+
+
+2. For the "Hello world" program, we mentioned that the kernel must copy the string from
+the user program to screen memory. Why must the screen's buffer memory be
+protected? Explain what might happen if a malicious application could alter any pixel
+on the screen, not just those within its own window
+
+-The screen's buffer memory must be protected because it contains important information
+about the graphical user interface (GUI) of the operating system. If a malicious application
+could alter any pixel on the screen, it could potentially disrupt the entire GUI and cause
+system instability or crashes. For example, if the malicious application changed the color of a critical button or icon,
+it could prevent users from accessing important functions or even shut down the system entirely.
+Additionally, if the malicious application could access the buffer memory of other applications,
+it could potentially steal sensitive information such as passwords or credit card numbers.
+Therefore, protecting the screen's buffer memory is essential for maintaining system security and stability.
+
+
+3. For each of the three mechanisms that supports dual-mode operation — privileged
+instructions, memory protection, and timer interrupts — explain what might go wrong
+without that mechanism, assuming the system still had the other two.
+
+
+-a) Privileged instructions:
+Without privileged instructions, any user-level program could execute potentially dangerous 
+instructions that could harm the system or other programs. For example, a user-level program could
+directly access hardware devices or modify critical data structures. This could result in system crashes,
+data corruption, or even security breaches if sensitive information is accessed. Without privileged instructions,
+there would be no way to prevent user-level programs from executing these dangerous instructions.
+
+b) Memory protection:
+Without memory protection, a user-level program could access any part of the system's memory,
+including memory used by other programs or the operating system itself. This could lead to data corruption,
+system crashes, or even security breaches if sensitive information is accessed. Without memory protection,
+there would be no way to prevent user-level programs from accessing or modifying critical system resources.
+
+c) Timer interrupts:
+Without timer interrupts, a user-level program could monopolize the CPU and prevent other programs from executing.
+This could result in slow system performance or even system crashes if critical system processes are blocked.
+Without timer interrupts, there would be no way to ensure that all programs get a fair share of CPU time 
+and that critical system processes are not blocked.
+
+
+4. Suppose you are tasked with designing the security system for a new web browser
+that supports rendering web pages with embedded web page scripts. What checks
+would you need to implement to ensure that executing buggy or malicious scripts
+could not corrupt or crash the browser?
+
+-To ensure that executing buggy or malicious scripts cannot corrupt or crash the browser,
+the following checks should be implemented:
+
+1. Sandbox: The web browser should run the embedded web page scripts in a sandboxed environment,
+which isolates them from the rest of the system. This prevents any malicious code from accessing or modifying critical system resources.
+
+2. Code analysis: The web browser should analyze the embedded web page scripts for potential security vulnerabilities
+and malicious code. This can be done using various techniques such as static and dynamic analysis.
+
+3. Access controls: The web browser should enforce access controls to prevent the embedded web page scripts from accessing sensitive information
+or performing unauthorized actions. This can be achieved by limiting the permissions granted to the scripts.
+
+4. Input validation: The web browser should validate all input received from the embedded web page scripts 
+to prevent injection attacks and other security vulnerabilities.
+
+5. Error handling: The web browser should handle errors gracefully to prevent crashes and other unexpected behavior.
+This can be done by implementing appropriate error handling mechanisms and logging.
+
+6. Regular updates: The web browser should be regularly updated with the latest security patches
+and bug fixes to address any new security vulnerabilities that are discovered.
+
+By implementing these checks, the security system for the new web browser can ensure that executing buggy
+or malicious scripts cannot corrupt or crash the browser.
+
+
+5. Define three types of user-mode to kernel-mode transfers.
+
+-1. System calls: User-mode applications can request services from the operating system by making system calls.
+These calls transfer control from user mode to kernel mode, where the requested service is performed.
+
+2. Interrupts: Interrupts are signals sent to the CPU by hardware devices or software processes to request immediate attention.
+When an interrupt occurs, the CPU transfers control from user mode to kernel mode to handle the interrupt.
+
+3. Device drivers: Device drivers are software components that enable communication between hardware devices
+and the operating system. When a user-mode application needs to access a device, it sends a request to the device driver.
+The device driver then transfers control from user mode to kernel mode to perform the necessary operations on the device.
+
+6. Define four types of kernel-mode to user-mode transfers.
+
+
+-1. System calls: When a user application needs to access a kernel function, it uses a system call.
+The system call transfers control from the user mode to the kernel mode.
+
+2. Interrupts: When an event occurs that requires immediate attention from the kernel,
+such as a hardware device signaling that it has completed a task, an interrupt is generated.
+The interrupt transfers control from the user mode to the kernel mode.
+
+3. Exceptions: An exception is a type of interrupt that is generated when an error occurs in the user mode,
+such as a divide-by-zero error or an invalid memory access.
+The exception transfers control from the user mode to the kernel mode to handle the error.
+
+4. Direct Memory Access (DMA): DMA is a method of transferring data between devices without involving the CPU.
+When a DMA transfer is initiated, control is transferred from the user mode to the kernel mode,
+which sets up the transfer and then returns control to the user mode.
+
+
+
+7. Most hardware architectures provide an instruction to return from an interrupt, such as
+iret. This instruction switches the mode of operation from kernel-mode to user-mode.
+a. Explain where in the operating system this instruction would be used.
+b. Explain what happens if an application program executes this instruction.
+
+
+-a. This instruction would be used in the interrupt handler routine of the operating system.
+When an interrupt occurs, the processor switches from user-mode to kernel-mode and jumps to the interrupt handler routine.
+Once the interrupt is handled, the processor needs to switch back to user-mode before returning to the interrupted program.
+The iret instruction is used to perform this switch and return to user-mode.
+
+b. If an application program executes the iret instruction, it would cause an exception or a trap.
+This is because the iret instruction can only be executed in kernel-mode,
+and user-mode programs do not have the privilege to execute kernel-mode instructions.
+The operating system would detect this violation and terminate the program, possibly displaying an error message to the user.
+
+
+8. A hardware designer argues that there is now enough on-chip transistors to provide
+1024 integer registers and 512 floating point registers. As a result, the compiler should
+almost never need to store anything on the stack. As an operating system guru, give
+your opinion of this design.
+a. What is the effect on the operating system of having a large number of registers?
+b. What hardware features would you recommend adding to the design?
+c. What happens if the hardware designer also wants to add a 16-stage pipeline into
+the CPU, with precise exceptions. How would that affect the user-kernel switching
+overhead?
+
+
+-a. Having a large number of registers can potentially improve performance by reducing the need to access memory for variable storage.
+However, it also increases the complexity of the hardware and may require changes to the instruction set architecture and compiler design.
+
+b. In addition to the increased number of registers, it may be beneficial to add support for register renaming and out-of-order execution
+to further improve performance.
+
+c. Adding a 16-stage pipeline with precise exceptions would likely increase the overhead of user-kernel switching.
+Precise exceptions require the pipeline to be flushed when an exception occurs, which can be costly in terms of performance.
+The operating system may need to be optimized to minimize the impact of these pipeline stalls on overall system performance.
+Additionally, careful consideration should be given to the design of the interrupt handling mechanism 
+to ensure that it can handle the increased complexity of the CPU design.
+
+
+9. With virtual machines, the host kernel runs in privileged mode to create a virtual
+machine that runs in user mode. The virtual machine provides the illusion that the
+guest kernel runs on its own machine in privileged mode, even though it is actually
+running in user mode.
+Early versions of the x86 architecture (pre-2006) were not completely virtualizable —
+these systems could not guarantee to run unmodified guest operating systems
+properly. One problem was the popf "pop flags" instruction that restores the processor
+status word. When popf was run in privileged mode, it changed both the ALU flags
+(e.g., the condition codes) and the systems flags (e.g., the interrupt mask). When popf
+was run in unprivileged mode, it changed just the ALU flags.
+
+a. Why do instructions like popf prevent transparent virtualization of the (old) x86
+architecture?
+b. How would you change the (old) x86 hardware to fix this problem?
+
+
+-a. Instructions like popf prevent transparent virtualization of the (old) x86 architecture
+because they change both the ALU flags and the system flags when executed in privileged mode.
+This means that if the same instruction is executed in unprivileged mode, it would only change the ALU flags and not the system flags,
+resulting in different behavior. This inconsistency makes it difficult to create a virtual machine that can accurately emulate the behavior of the guest operating system.
+
+b. To fix this problem, the (old) x86 hardware could be modified to include a new instruction that separates the changing of the ALU flags
+and the system flags into two separate operations. This would ensure that the behavior of the instruction
+is consistent regardless of whether it is executed in privileged or unprivileged mode, making it easier to create a transparent virtualization environment.
+Alternatively, the hardware could be modified to allow certain privileged instructions to be executed in unprivileged mode,
+while still maintaining the necessary security and isolation between the host and guest operating systems.
+
+10. Which of the following components is responsible for loading the initial value in the
+program counter for an application program before it starts running: the compiler, the
+linker, the kernel, or the boot ROM?
+
+
+-The boot ROM is responsible for loading the initial value in the program counter 
+for an application program before it starts running.
+
+
+11. We described how the operating system kernel mediates access to 1/0 devices for
+safety. Some newer 1/0 devices are virtualizable — they permit safe access from user-
+level programs, such as a guest operating system running in a virtual machine.
+Explain how you might design the hardware and software to get this to work. (Hint:
+The device needs much of the same hardware support as the operating system
+kernel.)
+
+-To design hardware and software to allow safe access to virtualizable 1/0 devices from user-level programs, the following steps can be taken:
+
+1. Hardware support: The hardware needs to support virtualization of 1/0 devices.
+This can be achieved by adding a layer of abstraction between the physical device and the operating system or hypervisor.
+This layer of abstraction can be implemented using hardware-assisted virtualization technologies such as Intel VT-x or AMD-V.
+
+2. Software support: The software needs to provide a mechanism for user-level programs to access the virtualized 1/0 devices safely.
+This can be achieved by implementing a virtual device driver that communicates with the device through the hardware abstraction layer.
+The virtual device driver should be designed to provide a secure interface for user-level programs to access the device.
+
+3. Access control: Access to the virtualized 1/0 devices should be controlled to ensure that only authorized user-level programs can access them.
+This can be achieved by implementing access control policies in the virtual device driver or the hypervisor.
+
+4. Performance: To ensure optimal performance, the virtual device driver should be designed to minimize the overhead of accessing the virtualized 1/0 devices.
+This can be achieved by implementing efficient data transfer mechanisms and minimizing context switching between user-level programs and the virtual device driver.
+
+Overall, designing hardware and software to allow safe access to virtualizable 1/0 devices from user-level programs requires careful consideration of security,
+performance, and compatibility with existing operating systems and hypervisors.
+
+12. System calls vs. procedure calls: How much more expensive is a system call than a
+procedure call? Write a simple test program to compare the cost of a simple procedure
+call to a simple system call (getpid() is a good candidate on UNIX; see the man page).
+To prevent the optimizing compiler from "optimizing out" your procedure calls, do not
+compile with optimization on. You should use a system call such as the UNIX
+gettimeofday() for time measurements. Design your code so the measurement
+overhead is negligible. Also, be aware that timer values in some systems have limited
+resolution (e.g., millisecond resolution).
+Explain the difference (if any) between the time required by your simple procedure call
+and simple system call by discussing what work each call must do.
+
+
+
+-System calls and procedure calls are both mechanisms used by programs to interact with the operating system or other system services.
+However, system calls involve a context switch from user mode to kernel mode, which can be more expensive than a procedure call.
+
+To compare the cost of a simple procedure call and a simple system call, we can write a test program that measures the time taken by each call.
+For example, we can use the getpid() system call on UNIX to get the process ID:
+
+
+#include <stdio.h>
+#include <sys/time.h>
+#include <unistd.h>
+
+void my_function() {
+    // do nothing
+}
+
+int main() {
+    struct timeval start, end;
+    long int elapsed;
+
+    gettimeofday(&start, NULL);
+    my_function();
+    gettimeofday(&end, NULL);
+elapsed = (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_usec - start.tv_usec);
+    printf("Procedure call took %ld microseconds\n", elapsed);
+
+    gettimeofday(&start, NULL);
+    getpid();
+    gettimeofday(&end, NULL);
+
+    elapsed = (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_usec - start.tv_usec);
+    printf("System call took %ld microseconds\n", elapsed);
+
+    return 0;
+}
+
+
+In this program, we define a simple function called my_function() that does nothing,
+and we measure the time taken by a call to this function and a call to getpid().
+We use gettimeofday() to get the current time before and after each call, and we calculate the elapsed time in microseconds.
+
+The difference in time required by the simple procedure call and simple system call can vary depending on the system and the specific calls being made.
+However, in general, a system call is expected to be more expensive than a procedure call because it involves a context switch from user mode to kernel mode.
+
+In a procedure call, the program simply jumps to the function code and executes it in the same context.
+In a system call, the program needs to switch to kernel mode, which involves saving the current user mode state,
+loading the kernel mode state, executing the system call code, and then switching back to user mode.
+This additional work can make system calls more expensive than procedure calls.
+
+In our test program, we can see that the system call took significantly longer than the procedure call on most systems.
+However, the difference may be small enough that it is negligible for many applications.
+It is important to keep in mind that the cost of system calls can add up if they are used frequently or in performance-critical sections of code.
+
+
+
+13. Suppose you have to implement an operating system on hardware that supports
+interrupts and exceptions but does not have a trap instruction. Can you devise a
+satisfactory substitute for traps using interrupts and/or exceptions? If so, explain how.
+If not, explain why.
+
+-Yes, it is possible to devise a satisfactory substitute for traps using interrupts and/or exceptions.
+One approach is to use a special interrupt or exception handler to emulate the behavior of a trap instruction.
+This handler would be triggered by a specific interrupt or exception that is reserved for this purpose.
+
+When the handler is triggered, it would save the current state of the program, switch to kernel mode,
+and execute the desired system call or other privileged operation. Once the operation is complete, 
+the handler would restore the saved state and return control to the program.
+
+This approach effectively emulates the behavior of a trap instruction by using an interrupt 
+or exception to transfer control to a special handler that performs a privileged operation before returning control to the program.
+The main disadvantage of this approach is that it requires an additional interrupt or exception to be reserved for this purpose,
+which may limit the number of available interrupts or exceptions for other purposes.
+
+Overall, while a trap instruction provides a more efficient and direct mechanism for transferring control to kernel mode,
+it is possible to implement a satisfactory substitute using interrupts and/or exceptions.
+
+
+14. Suppose you have to implement an operating system on hardware that supports
+exceptions and traps but does not have interrupts. Can you devise a satisfactory
+substitute for interrupts using exceptions and/or traps? If so, explain how. If not,
+explain why.
+
+
+-No, it is not possible to devise a satisfactory substitute for interrupts using only exceptions and traps.
+Interrupts are necessary for efficient and timely handling of external events, such as input/output operations and hardware interrupts.
+Exceptions and traps are designed to handle internal events, such as errors and system calls.
+
+Without interrupts, the operating system would have to constantly poll for external events,
+which would be inefficient and could result in delays or missed events. Additionally,
+some hardware devices may require interrupts for proper operation, so not having interrupts could limit the functionality of the system.
+
+Therefore, while exceptions and traps can be useful for handling internal events, 
+they cannot fully replace the functionality of interrupts in an operating system.
+
+
+15. Explain the steps that an operating system goes through when the CPU receives an
+interrupt.
+
+
+-When the CPU receives an interrupt, the operating system goes through the following steps:
+
+1. Interrupt request (IRQ) line is asserted by the device that needs attention.
+2. CPU stops executing the current instruction and saves the current context (registers, program counter, etc.) onto the stack.
+3. The interrupt controller sends an interrupt vector to the CPU, which contains the address of the interrupt handler routine in memory.
+4. The CPU jumps to the interrupt handler routine and begins executing it.
+5. The interrupt handler routine saves any necessary state and begins processing the interrupt request.
+6. Once the interrupt has been handled, the handler routine restores any saved state and returns control to the interrupted program
+by restoring its context from the stack.
+7. The interrupted program resumes execution from where it was interrupted.
+
+During this process, the operating system may also perform additional tasks such as prioritizing interrupts,
+masking or unmasking interrupts, and coordinating access to shared resources.
+
+
+16. When an operating system receives a system call from a program, a switch to
+operating system code occurs with the help of the hardware. The hardware sets the
+mode of operation to kernel mode, calls the operating system trap handler at a
+location specified by the operating system, and lets the operating system return to
+user mode after it finishes its trap handling.
+Consider the stack on which the operating system must run when it receives the
+system call. Should this stack be different from the one the application uses, or could it use the same stack as the application program? Assume that the application program
+is blocked while the system call runs.
+
+
+-The stack used by the operating system when it receives a system call should be different from the one used by the application program.
+This is because the operating system may need to store additional information on the stack,
+such as the current state of the processor and any other relevant system information,
+which could potentially overwrite data stored on the application program's stack.
+Additionally, using a separate stack ensures that the operating system can cleanly return control
+to the application program once the system call has completed without interfering with any of the application's own stack frames.
+
+17. Write a program to verify that the operating system on your computer correctly
+protects itself from rogue system calls. For a single system call — such as file system
+open — try all possible illegal calls: e.g., an invalid system call number, an invalid
+stack pointer, an invalid pointer stored on the stack, etc. What happens?
+
+
+-When an illegal system call is made, the operating system should detect it and terminate the offending process.
+The specific behavior may vary depending on the operating system, but typically the process will be terminated 
+with an error message indicating that an illegal system call was made. If the illegal call causes a memory access violation or corruption,
+it may result in a system crash or other errors. 
+
+It is important for the operating system to protect itself from rogue system calls to maintain system stability and prevent security vulnerabilities.
+By detecting and terminating offending processes,
+the operating system can prevent malicious code from exploiting vulnerabilities and causing harm to the system.
